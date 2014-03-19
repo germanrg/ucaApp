@@ -1,0 +1,16 @@
+<resources>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="s011fondo">#9bc3d4</color>
+    <color name="s011origenDestino">#43a1c9</color>
+    <color name="s011cronometro">#0c668d</color>
+    <color name="s011camino">#254d5e</color>
+    <color name="s011boton">#02354b</color>
+    <color name="b001fondo">#d9cdbf</color>
+    <color name="b001origenDestino">#6e0d25</color>
+    <color name="b001cronometro">#a23034</color>
+    <color name="b001camino">#706358</color>
+    <color name="b001boton">#a23034</color>
+
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">UcaApp</string>
+    <string name="dummy_button">Start</string>
+    <string name="dummy_content">TEST</string>
+    <string name="blueCarImgAlt">Pictograma Coche</string>
+    <string name="textViewLarge">Large Text</string>
+    <string name="arrivalBlockImgAlt">Arrivals Block Background</string>
+    <string name="departBlockImgAlt">Departures Block Background</string>
+    <string name="timerImgAlt">Timer Background</string>
+
+</resources>

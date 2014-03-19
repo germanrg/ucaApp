@@ -1,0 +1,129 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/b001fondo"
+    tools:context=".FullscreenActivity" >
+
+    <!--
+         The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc.
+    -->
+
+    <TextView
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:text="@string/dummy_content"
+        android:textColor="@color/b001origenDestino"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+    
+    <ImageView
+    	android:id="@+id/timer"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="32dp" 
+        android:src="@drawable/timerprovisional"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/timerImgAlt" />
+    
+     <TextView
+    	android:id="@+id/departuresBlockText"
+        android:layout_width="280dp"
+        android:layout_height="448dp"
+        android:layout_marginTop="145dp" 
+        android:layout_marginLeft="32dp"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+     
+    <ImageView
+    	android:id="@+id/departuresBlock"
+        android:layout_width="280dp"
+        android:layout_height="448dp"
+        android:layout_marginTop="145dp" 
+        android:layout_marginLeft="32dp"
+        android:src="@drawable/departblock"
+        android:contentDescription="@string/departBlockImgAlt" />
+    
+    <ImageView
+    	android:id="@+id/imageView1"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="345dp" 
+        android:layout_marginLeft="295dp"
+        android:src="@drawable/bluecar2"
+        android:contentDescription="@string/blueCarImgAlt" />
+
+    <ProgressBar
+    	android:id="@+id/progressBar1"
+    	style="?android:attr/progressBarStyleHorizontal"
+    	android:progressDrawable="@drawable/customprogressbar"         
+    	android:layout_width="400dp"
+    	android:layout_height="20dp"
+    	android:layout_marginTop="375dp" 
+    	android:layout_gravity="center_horizontal"/>
+    
+    <ImageView
+    	android:id="@+id/arrivalsBlock"
+        android:layout_width="280dp"
+        android:layout_height="448dp"
+        android:layout_marginTop="145dp" 
+        android:layout_marginLeft="712dp"
+        android:src="@drawable/departblock"
+        android:contentDescription="@string/arrivalBlockImgAlt" />
+    
+    <TextView
+    	android:id="@+id/arrivalsBlockText"
+        android:layout_width="280dp"
+        android:layout_height="448dp"
+        android:layout_marginTop="145dp" 
+        android:layout_marginLeft="712dp"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!--
+         This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows.
+    -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true" >
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="?buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/b001boton"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent" >
+
+            <Button
+                android:id="@+id/dummy_button"
+                style="?buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/dummy_button" />
+        </LinearLayout>
+
+
+
+    </FrameLayout>
+
+</FrameLayout>
