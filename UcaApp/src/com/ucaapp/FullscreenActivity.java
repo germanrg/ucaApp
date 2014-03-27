@@ -1,26 +1,9 @@
 package com.ucaapp;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.xml.sax.InputSource;
 
 import com.ucaapp.util.SystemUiHider;
 
@@ -32,7 +15,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -83,8 +65,7 @@ public class FullscreenActivity extends Activity {
 	 */
 	private SystemUiHider mSystemUiHider;
 	
-	private static final int RESULT_OK = 1;
-	private static final int RESULT_ER = 0;
+	private FullscreenActivity main;
 	
 	private ImageView departuresBlock, arrivalsBlock;
 	private TextView departuresText, arrivalsText;
@@ -208,6 +189,9 @@ public class FullscreenActivity extends Activity {
 		
 		mSystemUiHider.toggle(); // Hide controls
 		
+		// Get instance
+		main = this;
+		
 		// Get views
 		departuresBlock = (ImageView) findViewById(R.id.departuresBlock);
 		departuresBlock.setLongClickable(true);
@@ -263,11 +247,13 @@ public class FullscreenActivity extends Activity {
             	}
             	// Init progress bar
             	else {
-            		
-            		///////////////////////////////////
             		// Get distance from google maps //
-            		///////////////////////////////////
-            		new GetDistanceFromGoogleMaps().execute();
+            		GetDistanceFromGoogleMaps distance = 
+            				new GetDistanceFromGoogleMaps(main, coords.get(departuresText.getText()), 
+            						coords.get(arrivalsText.getText()),
+            						"driving");
+            		
+            		distance.execute();
             		
                     play.setEnabled(false);
                     
@@ -559,107 +545,9 @@ public class FullscreenActivity extends Activity {
 		places.remove(index);
 	}
 	
-	
-	// GET DISTANCE ASYNC
-    private class GetDistanceFromGoogleMaps extends AsyncTask <Void, Void, String> 
-	{
-		
-		@Override
-		protected String doInBackground (Void ...params)
-		{
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpContext localContext = new BasicHttpContext();
-			LatLng dep = coords.get(departuresText.getText());
-			LatLng arr = coords.get(arrivalsText.getText());
-			HttpGet httpGet = new HttpGet("http://maps.googleapis.com/maps/api/directions/xml?origin=" 
-											+ dep.latitude + "," + dep.longitude
-											+ "&destination=" 
-											+ arr.latitude + "," + arr.longitude
-											+ "&sensor=false&units=metric&mode=driving");
-			String text = null;
-			try{
-				HttpResponse response = httpClient.execute(httpGet, localContext);
-				HttpEntity entity = response.getEntity();
-				text = EntityUtils.toString(entity);
-			} 
-			catch (Exception e) { 
-				return e.toString(); 
-			}
-			
-			return parseXmlResponse(text); 
-		}
-		
-		protected void onPostExecute(String results){
-	        response(results);
-		}//onPOstExecute
-	}
-    
-    private void response(String responseData){
+    public void response(String responseData){
         TextView t = (TextView)findViewById(R.id.fullscreen_content);
         t.setText(responseData);
     }
-	
-    private static String parseXmlResponse(String text){
-    	String distanceText = "", durationText = "";
-    	int durationValue = 0, distanceValue = 0;
-    	// Parse to XML
-    	try{
-    		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    		DocumentBuilder db = factory.newDocumentBuilder();
-    		InputSource inStream = new InputSource();
-    		inStream.setCharacterStream(new StringReader(text));
-    		Document doc = db.parse(inStream);
-    		
-    		durationText = getDurationText(doc);
-    		durationValue = getDurationValue(doc);
-    		distanceText = getDistanceText(doc);
-    		distanceValue = getDistanceValue(doc);
-      	}
-    	catch(Exception e){
-    		e.printStackTrace();
-    	}
-    	
-    	return distanceText + "\n" + durationText;
-    }
-    
   
-    public static String getDurationText (Document mDocument) {
-        NodeList nodeList1 = mDocument.getElementsByTagName("duration");
-        Node node1 = nodeList1.item(nodeList1.getLength()-1);
-        NodeList nodeList2 = node1.getChildNodes();
-        Node node2 = nodeList2.item(getNodeIndex(nodeList2, "text"));
-        return node2.getTextContent();
-    }
-
-    public static int getDurationValue (Document mDocument) {
-        NodeList nodeList1 = mDocument.getElementsByTagName("duration");
-        Node node1 = nodeList1.item(nodeList1.getLength()-1);
-        NodeList nodeList2 = node1.getChildNodes();
-        Node node2 = nodeList2.item(getNodeIndex(nodeList2, "value"));
-        return Integer.parseInt(node2.getTextContent());
-    }
-
-    public static String getDistanceText (Document mDocument) {
-    	NodeList nodeList1 = mDocument.getElementsByTagName("distance");
-        Node node1 = nodeList1.item(nodeList1.getLength()-1);
-        NodeList nodeList2 = node1.getChildNodes();
-        Node node2 = nodeList2.item(getNodeIndex(nodeList2, "text"));
-        return node2.getTextContent();
-    }
-
-    public static int getDistanceValue (Document mDocument) {
-    	NodeList nodeList1 = mDocument.getElementsByTagName("distance");
-        Node node1 = nodeList1.item(nodeList1.getLength()-1);
-        NodeList nodeList2 = node1.getChildNodes();
-        Node node2 = nodeList2.item(getNodeIndex(nodeList2, "value"));
-        return Integer.parseInt(node2.getTextContent());
-    }
-    
-    private static int getNodeIndex(NodeList nodeList, String nodeName) {
-        for(int i = 0 ; i < nodeList.getLength() ; i++) {
-            if(nodeList.item(i).getNodeName().equals(nodeName))
-                return i;
-        }
-        return -1;
-    }
 }

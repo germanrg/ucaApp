@@ -42,8 +42,6 @@ public class Map extends Activity {
         setMarker("ESI", markers.get("ESI"));
         setMarker("Catedral", markers.get("Catedral"));
         setMarker("Plaza de España", markers.get("Plaza de España"));
-
-        
         
         //LatLng home = new LatLng(36.529055, -6.296238);
         //markerName = "Home";
@@ -117,9 +115,7 @@ public class Map extends Activity {
     	        markers.put(markerName, l);
     	        setMarker(markerName, l);
 
-    	        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    	        // Añadir handler para pasar aquí los nuevos markers a la lista de sitios de la actividad principal. //
-    	        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    	        // Pass new markers to the fullscreenactivity to store it.
     	        
     	        resultIntent = new Intent();
     	        resultIntent.putExtra("markers", markers);
