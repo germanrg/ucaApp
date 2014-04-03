@@ -17,11 +17,14 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -76,6 +79,8 @@ public class FullscreenActivity extends Activity {
     private Button play;
     
     private ProgressBar mProgress;
+    private ProgressBar secondsClock, minutesClock, hoursClock;
+    private TextView clockText; 
     private int mProgressStatus = 0;
     private Handler progressBarHandler = new Handler();
     private Thread progressThread;
@@ -213,13 +218,28 @@ public class FullscreenActivity extends Activity {
 			}
 	    });
 		
+
+        // CLOCK //
+        
+        secondsClock = (ProgressBar) findViewById(R.id.secondsClock);
+        minutesClock = (ProgressBar) findViewById(R.id.minutesClock);
+        hoursClock = (ProgressBar) findViewById(R.id.hoursClock);
+        clockText = (TextView) findViewById(R.id.clocktext);
+
+        Animation an = new RotateAnimation(0.0f, 90.0f, 250f, 273f);
+        an.setFillAfter(true);
+        secondsClock.startAnimation(an);
+        minutesClock.startAnimation(an);
+        hoursClock.startAnimation(an);
+        //startTimer(2);
+
+		
 		play = (Button)findViewById(R.id.dummy_button);
 		
 		blueCar = (ImageView)findViewById(R.id.imageView1);
 		blueCar.bringToFront();
 		blueCarParams = (android.widget.FrameLayout.LayoutParams)blueCar.getLayoutParams();
-		
-		
+				
 		// Progress Bar
 		
 		mProgress = (ProgressBar) findViewById(R.id.progressBar1);
@@ -232,8 +252,18 @@ public class FullscreenActivity extends Activity {
         // set the drawable as progress drawavle
         mProgress.setProgressDrawable(draw);
         
-        play.setOnClickListener(new View.OnClickListener() {
+        play.setOnClickListener(new View.OnClickListener() {        	
             public void onClick(View v) {
+            	if((3230/3600)>=1)
+            		hoursClock.setProgress((3230/3600)*3600);
+            	else
+            		hoursClock.setProgress(0);
+            	
+            	minutesClock.setProgress((3230-(3230/3600))/60);
+            	secondsClock.setProgress((3230-(3230/3600))%60);
+            	startTimer(3230);
+
+            	
             	if(departuresText.getText().equals("") || arrivalsText.getText().equals("") || departuresText.getText().equals(arrivalsText.getText()))
             		Toast.makeText(getApplicationContext(),
         	    			"Arrival and departure cannot be null\nArrival and departure cannot be the same place", Toast.LENGTH_LONG).show();
@@ -316,7 +346,47 @@ public class FullscreenActivity extends Activity {
             }
         };
         
-        
+	}
+	
+	private void startTimer(final int seconds) {
+	    CountDownTimer countDownTimer = new CountDownTimer(seconds * 1000, 500) {
+	        // 500 means, onTick function will be called at every 500 milliseconds
+	        @Override
+	        public void onTick(long leftTimeInMilliseconds) {
+	        	int leftTimeInSecs = (int)(leftTimeInMilliseconds/1000);
+	        	int hours = (int)(leftTimeInSecs/3600);
+	        	leftTimeInSecs = leftTimeInSecs - (hours*3600);
+	        	int mins = (int)(leftTimeInSecs/60);
+	        	leftTimeInSecs = leftTimeInSecs - (mins*60);
+	        	
+	            clockText.setText(String.format("%02d", hours) + ":" + String.format("%02d", mins) + ":" + String.format("%02d", leftTimeInSecs));
+	            clockText.bringToFront();
+	            
+	            if(hours == 0 && mins == 0){
+	            	secondsClock.setProgress(leftTimeInSecs);
+	            	
+	            }
+	            else if(hours == 0){
+	            	minutesClock.setProgress(((int)leftTimeInMilliseconds/1000)-60);
+	            }
+	            else{
+	            	while(hours>0)
+	            	hoursClock.setProgress(((int)leftTimeInMilliseconds/1000)-3600);
+	            }
+	            // format the textview to show the easily readable format
+
+	        }
+	        @Override
+	        public void onFinish() {
+	            if(clockText.getText().equals("00:00")){
+	            	clockText.setText("STOP");          
+	            }
+	            else{
+	            	clockText.setText("2:00");
+	            }
+	        }
+	    }.start();
+
 	}
 	
 	@Override
